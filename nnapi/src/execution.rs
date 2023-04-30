@@ -1,8 +1,8 @@
 use std::{ptr::{null_mut, NonNull}, ops::{Deref, DerefMut}, mem::size_of};
 
-use nnapi_sys::{ANeuralNetworksExecution, ANeuralNetworksExecution_create, ResultCode, ANeuralNetworksExecution_free, ANeuralNetworksExecution_setInput, ANeuralNetworksExecution_setOutput};
+use nnapi_sys::{ANeuralNetworksExecution, ANeuralNetworksExecution_create, ResultCode, ANeuralNetworksExecution_free, ANeuralNetworksExecution_setInput, ANeuralNetworksExecution_setOutput, ANeuralNetworksEvent, ANeuralNetworksExecution_startCompute};
 
-use crate::{Compilation, IntoResult};
+use crate::{Compilation, IntoResult, Event};
 
 pub struct Execution {
     inner: NonNull<ANeuralNetworksExecution>,
@@ -30,6 +30,17 @@ impl Execution {
     pub fn set_output<T>(&mut self, output_list_idx: i32, output: &mut [T]) -> crate::Result<()> {
         unsafe { ANeuralNetworksExecution_setOutput(&mut **self, output_list_idx, null_mut(), output.as_mut_ptr().cast(), output.len() * size_of::<T>()) }
             .into_result()
+    }
+
+    #[inline]
+    pub fn compute(&mut self) -> crate::Result<Event> {
+        let mut end_event: *mut ANeuralNetworksEvent = null_mut();
+        unsafe { ANeuralNetworksExecution_startCompute(&mut **self, &mut end_event) }
+            .into_result()?;
+
+        Ok(Event {
+            inner: NonNull::new(end_event).ok_or(ResultCode::ANEURALNETWORKS_UNEXPECTED_NULL)?,
+        })
     }
 }
 

@@ -22,7 +22,10 @@ fn main() -> nnapi::Result<()> {
     let mut execution = compilation.create_execution()?;
 
     execution.set_input(0, &[1.; 9])?;
-    execution.set_input(2, &[1.; 9])?;
+    execution.set_input(2, &[2.; 9])?;
+
+    let mut output = [0.; 9];
+    execution.set_output(0, &mut output)?;
 
     Ok(())
 }

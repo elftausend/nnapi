@@ -3,12 +3,14 @@ mod error;
 mod execution;
 mod model;
 mod operand;
+mod event;
 
 pub use compilation::*;
 pub use error::*;
 pub use execution::*;
 pub use model::*;
 pub use operand::*;
+pub use event::*;
 
 pub trait AsOperandCode {
     const OPERAND_CODE: nnapi_sys::OperandCode;
