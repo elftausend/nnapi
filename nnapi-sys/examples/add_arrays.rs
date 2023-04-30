@@ -1,4 +1,4 @@
-use std::{ptr::null_mut, ffi::c_void};
+use std::{ffi::c_void, ptr::null_mut};
 
 use nnapi_sys::{
     ANeuralNetworksCompilation, ANeuralNetworksCompilation_create,
@@ -9,14 +9,13 @@ use nnapi_sys::{
     ANeuralNetworksExecution_startCompute, ANeuralNetworksModel, ANeuralNetworksModel_addOperand,
     ANeuralNetworksModel_addOperation, ANeuralNetworksModel_create, ANeuralNetworksModel_finish,
     ANeuralNetworksModel_free, ANeuralNetworksModel_identifyInputsAndOutputs,
-    ANeuralNetworksModel_setOperandValue, ANeuralNetworksOperandType, ANEURALNETWORKS_ADD,
-    ANEURALNETWORKS_FUSED_NONE, ANEURALNETWORKS_INT32, ANEURALNETWORKS_TENSOR_FLOAT32,
+    ANeuralNetworksModel_setOperandValue, ANeuralNetworksOperandType, OperandCode,
+    ANEURALNETWORKS_ADD, ANEURALNETWORKS_FUSED_NONE,
 };
 
 fn main() {
-
     let tensor9x_type = ANeuralNetworksOperandType {
-        type_: ANEURALNETWORKS_TENSOR_FLOAT32,
+        type_: OperandCode::ANEURALNETWORKS_TENSOR_FLOAT32 as i32,
         dimensionCount: 1,
         dimensions: [9].as_ptr(),
         scale: 0.,
@@ -24,7 +23,7 @@ fn main() {
     };
 
     let activation_type = ANeuralNetworksOperandType {
-        type_: ANEURALNETWORKS_INT32 as i32,
+        type_: OperandCode::ANEURALNETWORKS_INT32 as i32,
         dimensionCount: 0,
         dimensions: null_mut(),
         scale: 0.,

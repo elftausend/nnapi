@@ -4,6 +4,8 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_snake_case)]
 
+use std::fmt::Debug;
+
 pub const __bool_true_false_are_defined: u32 = 1;
 pub const true_: u32 = 1;
 pub const false_: u32 = 0;
@@ -648,40 +650,40 @@ pub type user_off_t = i64;
 pub type syscall_arg_t = u_int64_t;
 pub type intmax_t = ::std::os::raw::c_long;
 pub type uintmax_t = ::std::os::raw::c_ulong;
-#[doc = " A 32 bit floating point scalar value."]
-pub const ANEURALNETWORKS_FLOAT32: OperandCode = 0;
-#[doc = " A signed 32 bit integer scalar value."]
-pub const ANEURALNETWORKS_INT32: OperandCode = 1;
-#[doc = " An unsigned 32 bit integer scalar value."]
-pub const ANEURALNETWORKS_UINT32: OperandCode = 2;
-#[doc = " A tensor of 32 bit floating point values."]
-pub const ANEURALNETWORKS_TENSOR_FLOAT32: OperandCode = 3;
-#[doc = " A tensor of 32 bit integer values."]
-pub const ANEURALNETWORKS_TENSOR_INT32: OperandCode = 4;
-#[doc = " A tensor of 8 bit unsigned integers that represent real numbers.\n\n Attached to this tensor are two numbers that can be used to convert the\n 8 bit integer to the real value and vice versa. These two numbers are:\n - scale: a 32 bit floating point value greater than zero.\n - zeroPoint: a 32 bit integer, in range [0, 255].\n\n The formula is:\n   real_value = (integer_value - zeroPoint) * scale."]
-pub const ANEURALNETWORKS_TENSOR_QUANT8_ASYMM: OperandCode = 5;
-#[doc = " An 8 bit boolean scalar value.\n\n Values of this operand type are either true or false. A zero value\n represents false; any other value represents true.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_BOOL: OperandCode = 6;
-#[doc = " A tensor of 16 bit signed integers that represent real numbers.\n\n Attached to this tensor is a number representing real value scale that is\n used to convert the 16 bit number to a real value in the following way:\n realValue = integerValue * scale.\n\n scale is a 32 bit floating point with value greater than zero.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_TENSOR_QUANT16_SYMM: OperandCode = 7;
-#[doc = " A tensor of IEEE 754 16 bit floating point values.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_TENSOR_FLOAT16: OperandCode = 8;
-#[doc = " A tensor of 8 bit boolean values.\n\n Values of this operand type are either true or false. A zero value\n represents false; any other value represents true.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_TENSOR_BOOL8: OperandCode = 9;
-#[doc = " An IEEE 754 16 bit floating point scalar value.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_FLOAT16: OperandCode = 10;
-#[doc = " A tensor of 8 bit signed integers that represent real numbers.\n\n This tensor is associated with additional fields that can\n be used to convert the 8 bit signed integer to the real value and vice versa.\n These fields are:\n - channelDim: a 32 bit unsigned integer indicating channel dimension.\n - scales: an array of positive 32 bit floating point values.\n The size of the scales array must be equal to dimensions[channelDim].\n\n {@link ANeuralNetworksModel_setOperandSymmPerChannelQuantParams} must be used\n to set the parameters for an Operand of this type.\n\n The channel dimension of this tensor must not be unknown (dimensions[channelDim] != 0).\n\n The formula is:\n realValue[..., C, ...] =\n     integerValue[..., C, ...] * scales[C]\n where C is an index in the Channel dimension.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_TENSOR_QUANT8_SYMM_PER_CHANNEL: OperandCode = 11;
-#[doc = " A tensor of 16 bit unsigned integers that represent real numbers.\n\n Attached to this tensor are two numbers that can be used to convert the\n 16 bit integer to the real value and vice versa. These two numbers are:\n - scale: a 32 bit floating point value greater than zero.\n - zeroPoint: a 32 bit integer, in range [0, 65535].\n\n The formula is:\n real_value = (integer_value - zeroPoint) * scale.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_TENSOR_QUANT16_ASYMM: OperandCode = 12;
-#[doc = " A tensor of 8 bit signed integers that represent real numbers.\n\n Attached to this tensor is a number representing real value scale that is\n used to convert the 8 bit number to a real value in the following way:\n realValue = integerValue * scale.\n\n scale is a 32 bit floating point with value greater than zero.\n\n Available since API level 29."]
-pub const ANEURALNETWORKS_TENSOR_QUANT8_SYMM: OperandCode = 13;
-#[doc = " A tensor of 8 bit signed integers that represent real numbers.\n\n Attached to this tensor are two numbers that can be used to convert the\n 8 bit integer to the real value and vice versa. These two numbers are:\n - scale: a 32 bit floating point value greater than zero.\n - zeroPoint: a 32 bit integer, in range [-128, 127].\n\n The formula is:\n real_value = (integer_value - zeroPoint) * scale.\n\n Available since API level 30."]
-pub const ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED: OperandCode = 14;
-#[doc = " A reference to a model.\n\n {@link ANeuralNetworksModel_setOperandValueFromModel} must be used to set\n the value for an Operand of this type.\n\n Available since API level 30."]
-pub const ANEURALNETWORKS_MODEL: OperandCode = 15;
+
 #[doc = " Operand types.\n\n The type of an operand in a model.\n\n Types prefaced with ANEURALNETWORKS_TENSOR_* must be used for tensor data (i.e., tensors\n with at least one dimension). Types not prefaced by ANEURALNETWORKS_TENSOR_* represent\n scalar values and must have no dimensions.\n\n Although we define many types, most operators accept just a few\n types. Most used are {@link ANEURALNETWORKS_TENSOR_FLOAT32},\n {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM},\n and {@link ANEURALNETWORKS_INT32}.\n\n Available since API level 27."]
-pub type OperandCode = ::std::os::raw::c_int;
+#[repr(C)]
+pub enum OperandCode {
+    #[doc = " A 32 bit floating point scalar value."]
+    ANEURALNETWORKS_FLOAT32 = 0,
+    #[doc = " A signed 32 bit integer scalar value."]
+    ANEURALNETWORKS_INT32 = 1,
+    #[doc = " An unsigned 32 bit integer scalar value."]
+    ANEURALNETWORKS_UINT32 = 2,
+    #[doc = " A tensor of 32 bit floating point values."]
+    ANEURALNETWORKS_TENSOR_FLOAT32 = 3,
+    #[doc = " A tensor of 32 bit signed integers."]
+    ANEURALNETWORKS_TENSOR_INT32 = 4,
+    #[doc = " A tensor of 8 bit unsigned integers."]
+    ANEURALNETWORKS_TENSOR_QUANT8_ASYMM = 5,
+    #[doc = " A tensor of 8 bit signed integers."]
+    ANEURALNETWORKS_TENSOR_QUANT8_SYMM_PER_CHANNEL = 6,
+    #[doc = " A tensor of 8 bit signed integers."]
+    ANEURALNETWORKS_TENSOR_QUANT8_SYMM = 7,
+    #[doc = " A tensor of 16 bit floating point values."]
+    ANEURALNETWORKS_TENSOR_FLOAT16 = 8,
+    #[doc = " A tensor of 8 bit boolean values."]
+    ANEURALNETWORKS_TENSOR_BOOL8 = 9,
+    #[doc = " A tensor of 16 bit unsigned integers."]
+    ANEURALNETWORKS_TENSOR_QUANT16_ASYMM = 10,
+    #[doc = " A tensor of 16 bit signed integers."]
+    ANEURALNETWORKS_TENSOR_QUANT16_SYMM = 11,
+    #[doc = " A tensor of 8 bit signed integers."]
+    ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED = 14,
+    #[doc = " A reference to a model."]
+    ANEURALNETWORKS_MODEL = 15,
+}
+
 #[doc = " Adds two tensors, element-wise.\n\n Takes two input tensors of identical {@link OperandCode} and compatible\n dimensions. The output is the sum of both input tensors, optionally\n modified by an activation function.\n\n Two dimensions are compatible when:\n     1. they are equal, or\n     2. one of them is 1\n\n The size of the output is the maximum size along each dimension of the\n input operands. It starts with the trailing dimensions, and works its\n way forward.\n\n Example:\n\n     input1.dimension = {4, 1, 2}\n     input2.dimension = {5, 4, 3, 1}\n     output.dimension = {5, 4, 3, 2}\n\n Since API level 29, generic zero-sized input tensor is supported. Zero\n dimension is only compatible with 0 or 1. The size of the output\n dimension is zero if either of corresponding input dimension is zero.\n\n Supported tensor {@link OperandCode}:\n * {@link ANEURALNETWORKS_TENSOR_FLOAT16} (since API level 29)\n * {@link ANEURALNETWORKS_TENSOR_FLOAT32}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} (since API level 30)\n * {@link ANEURALNETWORKS_TENSOR_INT32} (since API level 30)\n\n Supported tensor rank: up to 4\n\n Inputs:\n * 0: A tensor.\n * 1: A tensor of the same {@link OperandCode}, and compatible dimensions\n      as input0.\n      For a {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM} and\n      {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} tensor,\n      the scales and zeroPoint can be different from input0 scale and zeroPoint.\n * 2: An {@link ANEURALNETWORKS_INT32} scalar, and has to be one of the\n      {@link FuseCode} values. Specifies the activation to\n      invoke on the result.\n      For a {@link ANEURALNETWORKS_TENSOR_INT32} tensor,\n      the {@link FuseCode} must be \"NONE\".\n\n Outputs:\n * 0: The sum, a tensor of the same {@link OperandCode} as input0.\n      For a {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM} and\n      {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} tensor,\n      the scale and zeroPoint can be different from inputs' scale and zeroPoint.\n\n Available since API level 27."]
 pub const ANEURALNETWORKS_ADD: OperationCode = 0;
 #[doc = " Performs a 2-D average pooling operation.\n\n The output dimensions are functions of the filter dimensions, stride, and\n padding.\n\n The values in the output tensor are computed as:\n\n     output[b, i, j, channel] =\n         sum_{di, dj}(\n             input[b, strides[1] * i + di, strides[2] * j + dj, channel]\n         ) / sum(1)\n\n Supported tensor {@link OperandCode}:\n * {@link ANEURALNETWORKS_TENSOR_FLOAT16} (since API level 29)\n * {@link ANEURALNETWORKS_TENSOR_FLOAT32}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} (since API level 30)\n\n Supported tensor rank: 4, with \"NHWC\" or \"NCHW\" data layout.\n With the default data layout NHWC, the data is stored in the order of:\n [batch, height, width, channels]. Alternatively, the data layout could\n be NCHW, the data storage order of: [batch, channels, height, width].\n NCHW is supported since API level 29.\n\n Both explicit padding and implicit padding are supported.\n\n Inputs (explicit padding):\n * 0: A 4-D tensor, of shape [batches, height, width, depth], specifying\n      the input.\n      Since API level 29, zero batches is supported for this tensor.\n * 1: An {@link ANEURALNETWORKS_INT32} scalar, specifying the padding on\n      the left, in the ‘width’ dimension.\n * 2: An {@link ANEURALNETWORKS_INT32} scalar, specifying the padding on\n      the right, in the ‘width’ dimension.\n * 3: An {@link ANEURALNETWORKS_INT32} scalar, specifying the padding on\n      the top, in the ‘height’ dimension.\n * 4: An {@link ANEURALNETWORKS_INT32} scalar, specifying the padding on\n      the bottom, in the ‘height’ dimension.\n * 5: An {@link ANEURALNETWORKS_INT32} scalar, specifying the stride when\n      walking through input in the ‘width’ dimension.\n * 6: An {@link ANEURALNETWORKS_INT32} scalar, specifying the stride when\n      walking through input in the ‘height’ dimension.\n * 7: An {@link ANEURALNETWORKS_INT32} scalar, specifying the filter\n      width.\n * 8: An {@link ANEURALNETWORKS_INT32} scalar, specifying the filter\n      height.\n * 9: An {@link ANEURALNETWORKS_INT32} scalar, and has to be one of the\n      {@link FuseCode} values. Specifies the activation to\n      invoke on the result.\n * 10: An optional {@link ANEURALNETWORKS_BOOL} scalar, default to false.\n       Set to true to specify NCHW data layout for input0 and output0.\n       Available since API level 29.\n\n Inputs (implicit padding):\n * 0: A 4-D tensor, of shape [batches, height, width, depth], specifying\n      the input.\n      Since API level 29, zero batches is supported for this tensor.\n * 1: An {@link ANEURALNETWORKS_INT32} scalar, specifying the implicit\n      padding scheme, has to be one of the\n      {@link PaddingCode} values.\n * 2: An {@link ANEURALNETWORKS_INT32} scalar, specifying the stride when\n      walking through input in the ‘width’ dimension.\n * 3: An {@link ANEURALNETWORKS_INT32} scalar, specifying the stride when\n      walking through input in the ‘height’ dimension.\n * 4: An {@link ANEURALNETWORKS_INT32} scalar, specifying the filter\n      width.\n * 5: An {@link ANEURALNETWORKS_INT32} scalar, specifying the filter\n      height.\n * 6: An {@link ANEURALNETWORKS_INT32} scalar, and has to be one of the\n      {@link FuseCode} values. Specifies the activation to\n      invoke on the result.\n * 7: An optional {@link ANEURALNETWORKS_BOOL} scalar, default to false.\n      Set to true to specify NCHW data layout for input0 and output0.\n      Available since API level 29.\n\n Outputs:\n * 0: The output 4-D tensor, of shape\n      [batches, out_height, out_width, depth].\n      For a {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM} and\n      {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} tensor,\n      the scale and zeroPoint must be the same as input0.\n\n Available since API level 27."]
@@ -924,38 +926,97 @@ pub const ANEURALNETWORKS_DEVICE_GPU: DeviceTypeCode = 3;
 pub const ANEURALNETWORKS_DEVICE_ACCELERATOR: DeviceTypeCode = 4;
 #[doc = " Device types.\n\n The type of NNAPI device."]
 pub type DeviceTypeCode = ::std::os::raw::c_int;
-#[doc = " Operation was succesful."]
-pub const ResultCode_ANEURALNETWORKS_NO_ERROR: ResultCode = 0;
-#[doc = " Failure caused by not enough available memory."]
-pub const ResultCode_ANEURALNETWORKS_OUT_OF_MEMORY: ResultCode = 1;
-#[doc = " Failure caused by not enough available memory."]
-pub const ResultCode_ANEURALNETWORKS_INCOMPLETE: ResultCode = 2;
-#[doc = " Failure caused by unexpected null argument."]
-pub const ResultCode_ANEURALNETWORKS_UNEXPECTED_NULL: ResultCode = 3;
-#[doc = " Failure caused by invalid function arguments, invalid model definition,\n invalid execution definition or invalid data at execution time."]
-pub const ResultCode_ANEURALNETWORKS_BAD_DATA: ResultCode = 4;
-#[doc = " Failure caused by failed model execution."]
-pub const ResultCode_ANEURALNETWORKS_OP_FAILED: ResultCode = 5;
-#[doc = " Failure caused by object being in the wrong state."]
-pub const ResultCode_ANEURALNETWORKS_BAD_STATE: ResultCode = 6;
-#[doc = " Failure caused by not being able to map a file into memory.\n This may be caused by a file descriptor not being mappable, or an AHardwareBuffer\n not supported by the device.\n Mitigate by reading its content into memory."]
-pub const ResultCode_ANEURALNETWORKS_UNMAPPABLE: ResultCode = 7;
-#[doc = " Failure caused by insufficient buffer size provided to a model output."]
-pub const ResultCode_ANEURALNETWORKS_OUTPUT_INSUFFICIENT_SIZE: ResultCode = 8;
-#[doc = " Failure caused by a device not being available."]
-pub const ResultCode_ANEURALNETWORKS_UNAVAILABLE_DEVICE: ResultCode = 9;
-#[doc = " Failure because a deadline could not be met for a task, but future\n deadlines may still be met for the same task after a short delay.\n\n Available since API level 30."]
-pub const ResultCode_ANEURALNETWORKS_MISSED_DEADLINE_TRANSIENT: ResultCode = 10;
-#[doc = " Failure because a deadline could not be met for a task, and future\n deadlines will likely also not be met for the same task even after a\n short delay.\n\n Available since API level 30."]
-pub const ResultCode_ANEURALNETWORKS_MISSED_DEADLINE_PERSISTENT: ResultCode = 11;
-#[doc = " Failure because of a resource limitation within the driver, but future\n calls for the same task may still succeed after a short delay.\n\n Available since API level 30."]
-pub const ResultCode_ANEURALNETWORKS_RESOURCE_EXHAUSTED_TRANSIENT: ResultCode = 12;
-#[doc = " Failure because of a resource limitation within the driver, and future\n calls for the same task will likely also fail even after a short\n delay.\n\n Available since API level 30."]
-pub const ResultCode_ANEURALNETWORKS_RESOURCE_EXHAUSTED_PERSISTENT: ResultCode = 13;
-#[doc = " Failure indicating an object is in a dead state.\n\n Available since API level 30."]
-pub const ResultCode_ANEURALNETWORKS_DEAD_OBJECT: ResultCode = 14;
+
 #[doc = " Result codes.\n\n <p>Any NNAPI function can return any result code, including result codes not\n currently documented. Any value other than {@link ANEURALNETWORKS_NO_ERROR}\n indicates a failure of some kind.</p>\n\n <p>Additional information about the nature of a failure can be obtained from\n the device log after enabling NNAPI debugging by setting the debug.nn.vlog\n property to 1, e.g., by calling \"adb shell setprop debug.nn.vlog 1\".</p>\n\n Available since API level 27."]
-pub type ResultCode = ::std::os::raw::c_uint;
+#[repr(C)]
+pub enum ResultCode {
+    #[doc = " Operation was succesful."]
+    ANEURALNETWORKS_NO_ERROR = 0,
+    #[doc = " Failure caused by not enough available memory."]
+    ANEURALNETWORKS_OUT_OF_MEMORY = 1,
+    #[doc = " Failure caused by not enough available memory."]
+    ANEURALNETWORKS_INCOMPLETE = 2,
+    #[doc = " Failure caused by unexpected null argument."]
+    ANEURALNETWORKS_UNEXPECTED_NULL = 3,
+    #[doc = " Failure caused by invalid function arguments, invalid model definition,\n invalid execution definition or invalid data at execution time."]
+    ANEURALNETWORKS_BAD_DATA = 4,
+    #[doc = " Failure caused by failed model execution."]
+    ANEURALNETWORKS_OP_FAILED = 5,
+    #[doc = " Failure caused by object being in the wrong state."]
+    ANEURALNETWORKS_BAD_STATE = 6,
+    #[doc = " Failure caused by not being able to map a file into memory.\n This may be caused by a file descriptor not being mappable, or an AHardwareBuffer\n not supported by the device.\n Mitigate by reading its content into memory."]
+    ANEURALNETWORKS_UNMAPPABLE = 7,
+    #[doc = " Failure caused by insufficient buffer size provided to a model output."]
+    ANEURALNETWORKS_OUTPUT_INSUFFICIENT_SIZE = 8,
+    #[doc = " Failure caused by a device not being available."]
+    ANEURALNETWORKS_UNAVAILABLE_DEVICE = 9,
+    #[doc = " Failure because a deadline could not be met for a task, but future\n deadlines may still be met for the same task after a short delay.\n\n Available since API level 30."]
+    ANEURALNETWORKS_MISSED_DEADLINE_TRANSIENT = 10,
+    #[doc = " Failure because a deadline could not be met for a task, and future\n deadlines will likely also not be met for the same task even after a\n short delay.\n\n Available since API level 30."]
+    ANEURALNETWORKS_MISSED_DEADLINE_PERSISTENT = 11,
+    #[doc = " Failure because of a resource limitation within the driver, but future\n calls for the same task may still succeed after a short delay.\n\n Available since API level 30."]
+    ANEURALNETWORKS_RESOURCE_EXHAUSTED_TRANSIENT = 12,
+    #[doc = " Failure because of a resource limitation within the driver, and future\n calls for the same task will likely also fail even after a short\n delay.\n\n Available since API level 30."]
+    ANEURALNETWORKS_RESOURCE_EXHAUSTED_PERSISTENT = 13,
+    #[doc = " Failure indicating an object is in a dead state.\n\n Available since API level 30."]
+    ANEURALNETWORKS_DEAD_OBJECT = 14,
+
+    #[doc = " This error code is not defined in NNAPI."]
+    INVALID_ERROR = 1000,
+}
+
+impl From<i32> for ResultCode {
+    fn from(value: i32) -> Self {
+        match value {
+            0 => ResultCode::ANEURALNETWORKS_NO_ERROR,
+            1 => ResultCode::ANEURALNETWORKS_OUT_OF_MEMORY,
+            2 => ResultCode::ANEURALNETWORKS_INCOMPLETE,
+            3 => ResultCode::ANEURALNETWORKS_UNEXPECTED_NULL,
+            4 => ResultCode::ANEURALNETWORKS_BAD_DATA,
+            5 => ResultCode::ANEURALNETWORKS_OP_FAILED,
+            6 => ResultCode::ANEURALNETWORKS_BAD_STATE,
+            7 => ResultCode::ANEURALNETWORKS_UNMAPPABLE,
+            8 => ResultCode::ANEURALNETWORKS_OUTPUT_INSUFFICIENT_SIZE,
+            9 => ResultCode::ANEURALNETWORKS_UNAVAILABLE_DEVICE,
+            10 => ResultCode::ANEURALNETWORKS_MISSED_DEADLINE_TRANSIENT,
+            11 => ResultCode::ANEURALNETWORKS_MISSED_DEADLINE_PERSISTENT,
+            12 => ResultCode::ANEURALNETWORKS_RESOURCE_EXHAUSTED_TRANSIENT,
+            13 => ResultCode::ANEURALNETWORKS_RESOURCE_EXHAUSTED_PERSISTENT,
+            14 => ResultCode::ANEURALNETWORKS_DEAD_OBJECT,
+            _ => ResultCode::INVALID_ERROR,
+        }
+    }
+}
+
+impl Debug for ResultCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "ResultCode::{}", self.to_string())
+    }
+}
+
+impl ToString for ResultCode {
+    fn to_string(&self) -> String {
+        match self {
+            ResultCode::ANEURALNETWORKS_NO_ERROR => " Operation was succesful.",
+            ResultCode::ANEURALNETWORKS_OUT_OF_MEMORY => " Failure caused by not enough available memory.",
+            ResultCode::ANEURALNETWORKS_INCOMPLETE => " Failure caused by not enough available memory.",
+            ResultCode::ANEURALNETWORKS_UNEXPECTED_NULL => " Failure caused by unexpected null argument.",
+            ResultCode::ANEURALNETWORKS_BAD_DATA => " Failure caused by invalid function arguments, invalid model definition,\n invalid execution definition or invalid data at execution time.",
+            ResultCode::ANEURALNETWORKS_OP_FAILED => " Failure caused by failed model execution.",
+            ResultCode::ANEURALNETWORKS_BAD_STATE => " Failure caused by object being in the wrong state.",
+            ResultCode::ANEURALNETWORKS_UNMAPPABLE => " Failure caused by not being able to map a file into memory.\n This may be caused by a file descriptor not being mappable, or an AHardwareBuffer\n not supported by the device.\n Mitigate by reading its content into memory.",
+            ResultCode::ANEURALNETWORKS_OUTPUT_INSUFFICIENT_SIZE => " Failure caused by insufficient buffer size provided to a model output.",
+            ResultCode::ANEURALNETWORKS_UNAVAILABLE_DEVICE => " Failure caused by a device not being available.",
+            ResultCode::ANEURALNETWORKS_MISSED_DEADLINE_TRANSIENT => " Failure because a deadline could not be met for a task, but future\n deadlines may still be met for the same task after a short delay.\n\n Available since API level 30.",
+            ResultCode::ANEURALNETWORKS_MISSED_DEADLINE_PERSISTENT => " Failure because a deadline could not be met for a task, and future\n deadlines will likely also not be met for the same task even after a\n short delay.\n\n Available since API level 30.",
+            ResultCode::ANEURALNETWORKS_RESOURCE_EXHAUSTED_TRANSIENT => " Failure because of a resource limitation within the driver, but future\n calls for the same task may still succeed after a short delay.\n\n Available since API level 30.",
+            ResultCode::ANEURALNETWORKS_RESOURCE_EXHAUSTED_PERSISTENT => " Failure because of a resource limitation within the driver, and future\n calls for the same task will likely also fail even after a short\n delay.\n\n Available since API level 30.",
+            ResultCode::ANEURALNETWORKS_DEAD_OBJECT => " Failure indicating an object is in a dead state.\n\n Available since API level 30.",
+            ResultCode::INVALID_ERROR => " This error code is not defined in NNAPI.",
+        }.to_string()
+    }
+}
+
 pub const ANEURALNETWORKS_MAX_SIZE_OF_IMMEDIATELY_COPIED_VALUES: _bindgen_ty_1 = 128;
 #[doc = " For {@link ANeuralNetworksModel_setOperandValue}, values with a\n length smaller or equal to this will be immediately copied into\n the model. The size is in bytes.\n\n Available since API level 27."]
 pub type _bindgen_ty_1 = ::std::os::raw::c_uint;
