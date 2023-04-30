@@ -1,4 +1,4 @@
-use nnapi::{Model, Operand, AsOperandCode};
+use nnapi::{Model, Operand};
 use nnapi_sys::{OperationCode, OperandCode};
 
 
@@ -31,6 +31,8 @@ fn main() -> nnapi::Result<()> {
 
     let mut end_event = execution.compute()?;
     end_event.wait()?;
+
+    assert_eq!(output, [3f32; 9]);
 
     Ok(())
 }

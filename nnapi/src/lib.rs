@@ -1,3 +1,5 @@
+//! # Safe and abstracted Rust bindings for Android Neural Networks API
+
 mod compilation;
 mod error;
 mod execution;
