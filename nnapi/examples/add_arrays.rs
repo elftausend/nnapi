@@ -27,5 +27,8 @@ fn main() -> nnapi::Result<()> {
     let mut output = [0.; 9];
     execution.set_output(0, &mut output)?;
 
+    let mut end_event = execution.compute()?;
+    end_event.wait()?;
+
     Ok(())
 }
