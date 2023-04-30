@@ -17,5 +17,8 @@ fn main() -> nnapi::Result<()> {
 
     model.finish()?;
 
+    let mut compilation = model.compile()?;
+    let execution = compilation.create_execution()?;
+
     Ok(())
 }

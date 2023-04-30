@@ -12,7 +12,7 @@ use nnapi_sys::{
 
 use crate::{
     error::{IntoResult, Result},
-    Operand,
+    Compilation, Operand,
 };
 
 pub struct Model {
@@ -94,8 +94,14 @@ impl Model {
         .into_result()
     }
 
+    #[inline]
     pub fn finish(&mut self) -> Result<()> {
         unsafe { ANeuralNetworksModel_finish(&mut **self) }.into_result()
+    }
+
+    #[inline]
+    pub fn compile(&mut self) -> Result<Compilation> {
+        Compilation::new(self)
     }
 }
 
