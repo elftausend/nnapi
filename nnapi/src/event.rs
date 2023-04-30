@@ -1,6 +1,6 @@
 use std::{ptr::NonNull, ops::{Deref, DerefMut}};
 
-use nnapi_sys::{ANeuralNetworksEvent, ANeuralNetworksEvent_wait};
+use nnapi_sys::{ANeuralNetworksEvent, ANeuralNetworksEvent_wait, ANeuralNetworksEvent_free};
 
 use crate::IntoResult;
 
@@ -28,5 +28,11 @@ impl DerefMut for Event {
     #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe { self.inner.as_mut() }
+    }
+}
+
+impl Drop for Event {
+    fn drop(&mut self) {
+        unsafe { ANeuralNetworksEvent_free(self.inner.as_mut()) };
     }
 }

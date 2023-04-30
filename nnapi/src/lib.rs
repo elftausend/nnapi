@@ -16,6 +16,7 @@ pub trait AsOperandCode {
     const OPERAND_CODE: nnapi_sys::OperandCode;
 }
 
+/// not useable for tensors!
 impl AsOperandCode for f32 {
     const OPERAND_CODE: nnapi_sys::OperandCode = nnapi_sys::OperandCode::ANEURALNETWORKS_FLOAT32;
 }
