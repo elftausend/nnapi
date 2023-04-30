@@ -1,8 +1,9 @@
-use nnapi::{Model, Operand};
-use nnapi_sys::{OperandCode, OperationCode};
+use nnapi::{Model, Operand, AsOperandCode};
+use nnapi_sys::OperationCode;
+
 
 fn main() -> nnapi::Result<()> {
-    let tensor9x_type = Operand::tensor(OperandCode::ANEURALNETWORKS_TENSOR_FLOAT32, &[9], 0., 0);
+    let tensor9x_type = Operand::tensor(f32::OPERAND_CODE, &[9], 0., 0);
 
     let mut model = Model::from_operands([
         tensor9x_type,
@@ -18,7 +19,10 @@ fn main() -> nnapi::Result<()> {
     model.finish()?;
 
     let mut compilation = model.compile()?;
-    let execution = compilation.create_execution()?;
+    let mut execution = compilation.create_execution()?;
+
+    execution.set_input(0, &[1.; 9])?;
+    execution.set_input(2, &[1.; 9])?;
 
     Ok(())
 }
