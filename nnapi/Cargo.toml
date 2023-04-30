@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 keywords = ["android", "ndk", "neural-network", "nnapi", "machine-learning"]
 categories = ["api-bindings", "science", "algorithms", "mathematics"]
+description = "Provides a safe abstraction of the Android NNAPI FFI bindings."
 readme = "../README.md"
 license = "Apache-2.0"
 
