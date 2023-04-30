@@ -1482,4 +1482,6 @@ extern "C" {
         duration: u64,
         event: *mut *mut ANeuralNetworksEvent,
     ) -> ::std::os::raw::c_int;
+
+    pub fn ANeuralNetworks_getRuntimeFeatureLevel() -> i64;
 }
