@@ -1,5 +1,6 @@
 use nnapi_sys::{ANeuralNetworksOperandType, OperandCode};
 
+#[derive(Debug, Clone, Copy)]
 pub struct Operand {
     pub inner: ANeuralNetworksOperandType,
 }
@@ -17,6 +18,7 @@ impl Operand {
         }
     }
 
+    #[inline]
     pub fn activation() -> Self {
         Operand {
             inner: ANeuralNetworksOperandType {

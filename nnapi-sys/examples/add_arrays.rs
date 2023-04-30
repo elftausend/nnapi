@@ -9,8 +9,8 @@ use nnapi_sys::{
     ANeuralNetworksExecution_startCompute, ANeuralNetworksModel, ANeuralNetworksModel_addOperand,
     ANeuralNetworksModel_addOperation, ANeuralNetworksModel_create, ANeuralNetworksModel_finish,
     ANeuralNetworksModel_free, ANeuralNetworksModel_identifyInputsAndOutputs,
-    ANeuralNetworksModel_setOperandValue, ANeuralNetworksOperandType, OperandCode,
-    ANEURALNETWORKS_ADD, ANEURALNETWORKS_FUSED_NONE,
+    ANeuralNetworksModel_setOperandValue, ANeuralNetworksOperandType, OperandCode, OperationCode,
+    ANEURALNETWORKS_FUSED_NONE,
 };
 
 fn main() {
@@ -69,7 +69,7 @@ fn main() {
         let inputs = [lhs_idx, rhs_idx, activation_idx];
         ANeuralNetworksModel_addOperation(
             model,
-            ANEURALNETWORKS_ADD,
+            OperationCode::ANEURALNETWORKS_ADD as i32,
             3, // inputs.len().try_into().unwrap(),
             inputs.as_ptr(),
             1, // outputs.len().try_into().unwrap(),
