@@ -4,7 +4,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_snake_case)]
 
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 
 pub const __bool_true_false_are_defined: u32 = 1;
 pub const true_: u32 = 1;
@@ -967,6 +967,10 @@ pub enum ResultCode {
     INVALID_ERROR = 1000,
 }
 
+impl std::error::Error for ResultCode {
+
+}
+
 impl From<i32> for ResultCode {
     fn from(value: i32) -> Self {
         match value {
@@ -996,8 +1000,14 @@ impl Debug for ResultCode {
     }
 }
 
-impl ToString for ResultCode {
-    fn to_string(&self) -> String {
+impl Display for ResultCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "ResultCode::{}", self.to_string())
+    }
+}
+
+impl ResultCode {
+    pub fn as_str(&self) -> &'static str {
         match self {
             ResultCode::ANEURALNETWORKS_NO_ERROR => " Operation was succesful.",
             ResultCode::ANEURALNETWORKS_OUT_OF_MEMORY => " Failure caused by not enough available memory.",
@@ -1015,7 +1025,7 @@ impl ToString for ResultCode {
             ResultCode::ANEURALNETWORKS_RESOURCE_EXHAUSTED_PERSISTENT => " Failure because of a resource limitation within the driver, and future\n calls for the same task will likely also fail even after a short\n delay.\n\n Available since API level 30.",
             ResultCode::ANEURALNETWORKS_DEAD_OBJECT => " Failure indicating an object is in a dead state.\n\n Available since API level 30.",
             ResultCode::INVALID_ERROR => " This error code is not defined in NNAPI.",
-        }.to_string()
+        }
     }
 }
 
