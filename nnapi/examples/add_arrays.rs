@@ -1,6 +1,5 @@
 use nnapi::{Model, Operand};
-use nnapi_sys::{OperationCode, OperandCode};
-
+use nnapi_sys::{OperandCode, OperationCode};
 
 fn main() -> nnapi::Result<()> {
     let tensor9x_type = Operand::tensor(OperandCode::ANEURALNETWORKS_TENSOR_FLOAT32, &[9], 0., 0);

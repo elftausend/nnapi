@@ -1,6 +1,9 @@
-use std::{ptr::NonNull, ops::{Deref, DerefMut}};
+use std::{
+    ops::{Deref, DerefMut},
+    ptr::NonNull,
+};
 
-use nnapi_sys::{ANeuralNetworksEvent, ANeuralNetworksEvent_wait, ANeuralNetworksEvent_free};
+use nnapi_sys::{ANeuralNetworksEvent, ANeuralNetworksEvent_free, ANeuralNetworksEvent_wait};
 
 use crate::IntoResult;
 
@@ -10,8 +13,7 @@ pub struct Event {
 
 impl Event {
     pub fn wait(&mut self) -> crate::Result<()> {
-        unsafe { ANeuralNetworksEvent_wait(&mut **self) }
-            .into_result()
+        unsafe { ANeuralNetworksEvent_wait(&mut **self) }.into_result()
     }
 }
 

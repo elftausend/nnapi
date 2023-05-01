@@ -4,11 +4,11 @@ use std::{
 };
 
 use nnapi_sys::{
-    ANeuralNetworksCompilation, ANeuralNetworksCompilation_create, ANeuralNetworksCompilation_free,
-    ResultCode, ANeuralNetworksCompilation_finish,
+    ANeuralNetworksCompilation, ANeuralNetworksCompilation_create,
+    ANeuralNetworksCompilation_finish, ANeuralNetworksCompilation_free, ResultCode,
 };
 
-use crate::{IntoResult, Model, Execution};
+use crate::{Execution, IntoResult, Model};
 
 pub struct Compilation {
     inner: NonNull<ANeuralNetworksCompilation>,

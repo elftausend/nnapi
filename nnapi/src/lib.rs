@@ -1,18 +1,23 @@
 //! # Safe and abstracted Rust bindings for Android Neural Networks API
 
+mod burst;
 mod compilation;
 mod error;
+mod event;
 mod execution;
 mod model;
 mod operand;
-mod event;
 
+pub use burst::*;
 pub use compilation::*;
 pub use error::*;
+pub use event::*;
 pub use execution::*;
 pub use model::*;
 pub use operand::*;
-pub use event::*;
+pub mod nnapi_sys {
+    pub use ::nnapi_sys::*;
+}
 
 pub trait AsOperandCode {
     const OPERAND_CODE: nnapi_sys::OperandCode;
@@ -32,5 +37,6 @@ impl AsOperandCode for u32 {
 }
 
 impl AsOperandCode for bool {
-    const OPERAND_CODE: nnapi_sys::OperandCode = nnapi_sys::OperandCode::ANEURALNETWORKS_TENSOR_BOOL8;
+    const OPERAND_CODE: nnapi_sys::OperandCode =
+        nnapi_sys::OperandCode::ANEURALNETWORKS_TENSOR_BOOL8;
 }
