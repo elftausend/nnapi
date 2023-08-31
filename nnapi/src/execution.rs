@@ -1,16 +1,18 @@
 use std::{
+    ffi::c_void,
     mem::size_of,
     ops::{Deref, DerefMut},
     ptr::{null_mut, NonNull},
 };
 
 use nnapi_sys::{
-    ANeuralNetworksEvent, ANeuralNetworksExecution, ANeuralNetworksExecution_create,
-    ANeuralNetworksExecution_free, ANeuralNetworksExecution_setInput,
-    ANeuralNetworksExecution_setOutput, ANeuralNetworksExecution_startCompute, ResultCode, ANeuralNetworksExecution_burstCompute,
+    ANeuralNetworksEvent, ANeuralNetworksExecution, ANeuralNetworksExecution_burstCompute,
+    ANeuralNetworksExecution_create, ANeuralNetworksExecution_free,
+    ANeuralNetworksExecution_setInput, ANeuralNetworksExecution_setOutput,
+    ANeuralNetworksExecution_startCompute, ResultCode,
 };
 
-use crate::{Compilation, Event, IntoResult, Burst};
+use crate::{Burst, Compilation, Event, IntoResult};
 
 pub struct Execution {
     inner: NonNull<ANeuralNetworksExecution>,
@@ -31,26 +33,50 @@ impl Execution {
     #[inline]
     pub fn set_input<T>(&mut self, input_list_idx: i32, input: &[T]) -> crate::Result<()> {
         unsafe {
-            ANeuralNetworksExecution_setInput(
-                &mut **self,
+            self.set_input_raw(
                 input_list_idx,
-                null_mut(),
                 input.as_ptr().cast(),
                 input.len() * size_of::<T>(),
             )
         }
-        .into_result()
+    }
+
+    #[inline]
+    pub unsafe fn set_input_raw(
+        &mut self,
+        input_list_idx: i32,
+        buffer: *const c_void,
+        length: usize,
+    ) -> crate::Result<()> {
+        ANeuralNetworksExecution_setInput(&mut **self, input_list_idx, null_mut(), buffer, length)
+            .into_result()
     }
 
     #[inline]
     pub fn set_output<T>(&mut self, output_list_idx: i32, output: &mut [T]) -> crate::Result<()> {
         unsafe {
+            self.set_output_raw(
+                output_list_idx,
+                output.as_mut_ptr().cast(),
+                output.len() * size_of::<T>(),
+            )
+        }
+    }
+
+    #[inline]
+    pub unsafe fn set_output_raw(
+        &mut self,
+        output_list_idx: i32,
+        buffer: *mut c_void,
+        length: usize,
+    ) -> crate::Result<()> {
+        unsafe {
             ANeuralNetworksExecution_setOutput(
                 &mut **self,
                 output_list_idx,
                 null_mut(),
-                output.as_mut_ptr().cast(),
-                output.len() * size_of::<T>(),
+                buffer,
+                length,
             )
         }
         .into_result()

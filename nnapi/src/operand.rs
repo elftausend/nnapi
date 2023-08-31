@@ -1,12 +1,16 @@
+use std::marker::PhantomData;
+
 use nnapi_sys::{ANeuralNetworksOperandType, OperandCode};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Operand {
     pub inner: ANeuralNetworksOperandType,
+    pub len: usize,
+    pub dimensions: Vec<u32>
 }
 
 impl Operand {
-    pub fn tensor(dtype: OperandCode, dimensions: &[u32], scale: f32, zero_point: i32) -> Self {
+    pub fn tensor(dtype: OperandCode, dimensions: Vec<u32>, scale: f32, zero_point: i32) -> Self {
         Operand {
             inner: ANeuralNetworksOperandType {
                 type_: dtype as i32,
@@ -15,6 +19,8 @@ impl Operand {
                 scale,
                 zeroPoint: zero_point,
             },
+            len: dimensions.iter().product::<u32>() as usize,
+            dimensions
         }
     }
 
@@ -28,6 +34,8 @@ impl Operand {
                 scale: 0.,
                 zeroPoint: 0,
             },
+            len: 0,
+            dimensions: vec![],
         }
     }
 }

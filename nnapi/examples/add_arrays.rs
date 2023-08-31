@@ -2,11 +2,11 @@ use nnapi::{Model, Operand};
 use nnapi_sys::{OperandCode, OperationCode};
 
 fn main() -> nnapi::Result<()> {
-    let tensor9x_type = Operand::tensor(OperandCode::ANEURALNETWORKS_TENSOR_FLOAT32, &[9], 0., 0);
+    let tensor9x_type = Operand::tensor(OperandCode::ANEURALNETWORKS_TENSOR_FLOAT32, vec![9], 0., 0);
 
     let mut model = Model::from_operands([
-        tensor9x_type,
-        tensor9x_type,
+        tensor9x_type.clone(),
+        tensor9x_type.clone(),
         Operand::activation(),
         tensor9x_type,
     ])?;

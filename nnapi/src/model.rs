@@ -33,14 +33,14 @@ impl Model {
     pub fn from_operands(operands: impl IntoIterator<Item = Operand>) -> Result<Self> {
         let mut model = Model::new()?;
         for operand in operands.into_iter() {
-            model.add_operand(operand)?;
+            model.add_operand(&operand)?;
         }
 
         Ok(model)
     }
 
     #[inline]
-    pub fn add_operand(&mut self, operand: Operand) -> Result<()> {
+    pub fn add_operand(&mut self, operand: &Operand) -> Result<()> {
         unsafe { ANeuralNetworksModel_addOperand(self.model.as_mut(), &operand.inner) }
             .into_result()
     }

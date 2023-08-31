@@ -685,6 +685,7 @@ pub enum OperandCode {
 }
 
 #[doc = " Operation types.\n\n The type of an operation in a model.\n\n Available since API level 27."]
+#[derive(Debug)]
 pub enum OperationCode {
     #[doc = " Adds two tensors, element-wise.\n\n Takes two input tensors of identical {@link OperandCode} and compatible\n dimensions. The output is the sum of both input tensors, optionally\n modified by an activation function.\n\n Two dimensions are compatible when:\n     1. they are equal, or\n     2. one of them is 1\n\n The size of the output is the maximum size along each dimension of the\n input operands. It starts with the trailing dimensions, and works its\n way forward.\n\n Example:\n\n     input1.dimension = {4, 1, 2}\n     input2.dimension = {5, 4, 3, 1}\n     output.dimension = {5, 4, 3, 2}\n\n Since API level 29, generic zero-sized input tensor is supported. Zero\n dimension is only compatible with 0 or 1. The size of the output\n dimension is zero if either of corresponding input dimension is zero.\n\n Supported tensor {@link OperandCode}:\n * {@link ANEURALNETWORKS_TENSOR_FLOAT16} (since API level 29)\n * {@link ANEURALNETWORKS_TENSOR_FLOAT32}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} (since API level 30)\n * {@link ANEURALNETWORKS_TENSOR_INT32} (since API level 30)\n\n Supported tensor rank: up to 4\n\n Inputs:\n * 0: A tensor.\n * 1: A tensor of the same {@link OperandCode}, and compatible dimensions\n      as input0.\n      For a {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM} and\n      {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} tensor,\n      the scales and zeroPoint can be different from input0 scale and zeroPoint.\n * 2: An {@link ANEURALNETWORKS_INT32} scalar, and has to be one of the\n      {@link FuseCode} values. Specifies the activation to\n      invoke on the result.\n      For a {@link ANEURALNETWORKS_TENSOR_INT32} tensor,\n      the {@link FuseCode} must be \"NONE\".\n\n Outputs:\n * 0: The sum, a tensor of the same {@link OperandCode} as input0.\n      For a {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM} and\n      {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED} tensor,\n      the scale and zeroPoint can be different from inputs' scale and zeroPoint.\n\n Available since API level 27."]
     ANEURALNETWORKS_ADD = 0,
@@ -890,6 +891,10 @@ pub enum OperationCode {
     ANEURALNETWORKS_FILL = 100,
     #[doc = " Returns the rank of a tensor.\n\n The rank of a tensor is the number of dimensions in it. Also known as\n \"order\", \"degree\", \"ndims\".\n\n Supported tensor {@link OperandCode}:\n * {@link ANEURALNETWORKS_TENSOR_FLOAT16}\n * {@link ANEURALNETWORKS_TENSOR_FLOAT32}\n * {@link ANEURALNETWORKS_TENSOR_INT32}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM}\n * {@link ANEURALNETWORKS_TENSOR_QUANT16_SYMM}\n * {@link ANEURALNETWORKS_TENSOR_BOOL8}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_SYMM_PER_CHANNEL}\n * {@link ANEURALNETWORKS_TENSOR_QUANT16_ASYMM}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_SYMM}\n * {@link ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED}\n\n Supported tensor rank: from 1.\n\n Inputs:\n * 0: The input tensor.\n\n Outputs:\n * 0: A scalar of {@link ANEURALNETWORKS_INT32}, specifying the rank\n      of the input tensor.\n\n Available since API level 30."]
     ANEURALNETWORKS_RANK = 101,
+    /// Performs multiplication of two tensors in batches.
+    ANEURALNETWORKS_BATCH_MATMUL = 102,
+    /// None
+    None = 2000,
 }
 
 #[doc = " NO fused activation function."]
@@ -967,9 +972,7 @@ pub enum ResultCode {
     INVALID_ERROR = 1000,
 }
 
-impl std::error::Error for ResultCode {
-
-}
+impl std::error::Error for ResultCode {}
 
 impl From<i32> for ResultCode {
     fn from(value: i32) -> Self {

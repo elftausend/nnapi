@@ -25,11 +25,13 @@ pub trait AsOperandCode {
 
 /// not useable for tensors!
 impl AsOperandCode for f32 {
-    const OPERAND_CODE: nnapi_sys::OperandCode = nnapi_sys::OperandCode::ANEURALNETWORKS_TENSOR_FLOAT32;
+    const OPERAND_CODE: nnapi_sys::OperandCode =
+        nnapi_sys::OperandCode::ANEURALNETWORKS_TENSOR_FLOAT32;
 }
 
 impl AsOperandCode for i32 {
-    const OPERAND_CODE: nnapi_sys::OperandCode = nnapi_sys::OperandCode::ANEURALNETWORKS_TENSOR_INT32;
+    const OPERAND_CODE: nnapi_sys::OperandCode =
+        nnapi_sys::OperandCode::ANEURALNETWORKS_TENSOR_INT32;
 }
 
 impl AsOperandCode for u32 {
