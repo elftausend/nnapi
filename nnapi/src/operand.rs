@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use nnapi_sys::{ANeuralNetworksOperandType, OperandCode};
 
 #[derive(Debug, Clone)]
